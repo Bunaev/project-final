@@ -5,6 +5,4 @@ target
 logs
 attachments
 *.patch
-src/main/resources/application.yaml
-
-
+.env
