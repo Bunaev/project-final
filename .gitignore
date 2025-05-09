@@ -5,4 +5,4 @@ target
 logs
 attachments
 *.patch
-.env
+application-secret.yaml
