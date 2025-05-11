@@ -22,11 +22,16 @@ delete
 from PROJECT;
 alter
 sequence PROJECT_ID_SEQ restart with 1;
-
+DELETE
+FROM USER_BELONG;
 delete
 from USERS;
 alter
 sequence USERS_ID_SEQ restart with 1;
+delete
+from attachment;
+alter
+    sequence attachment_id_seq restart with 1;
 
 insert into USERS (EMAIL, PASSWORD, FIRST_NAME, LAST_NAME, DISPLAY_NAME)
 values ('user@gmail.com', '{noop}password', 'userFirstName', 'userLastName', 'userDisplayName'),

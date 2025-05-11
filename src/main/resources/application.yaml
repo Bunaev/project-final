@@ -30,7 +30,9 @@ spring:
         jdbc.batch_size: 20
 
   liquibase:
-    changeLog: "classpath:db/changelog.sql"
+    enabled: true
+    change-log: classpath:db/changelog.sql
+    contexts: prod
 
   # Jackson Fields Serialization
   jackson:
@@ -56,10 +58,11 @@ spring:
 
 logging:
   level:
-    root: WARN
-    com.javarush.jira: DEBUG
-    com.javarush.jira.common.config.MvcConfig: WARN
-    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+    root: warn
+    com.javarush.jira: debug
+    com.javarush.jira.common.config.MvcConfig: warn
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: debug
+    liquibase: debug
 
 server:
   #  https://springdoc.org/index.html#how-can-i-deploy-springdoc-openapi-ui-behind-a-reverse-proxy
