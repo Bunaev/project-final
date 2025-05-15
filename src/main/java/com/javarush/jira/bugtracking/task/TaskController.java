@@ -156,4 +156,21 @@ public class TaskController {
             this(taskTo, new LinkedList<>());
         }
     }
+    @PutMapping(path = "/tag/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateTag(@PathVariable long id, @RequestBody String...tag) {
+        taskService.addTags(id, tag);
+    }
+
+    // Методы в контроллере для проверки работоспособности соответствующих
+    // методов на слое сервисов при помощи Swagger.
+
+    @GetMapping(value = "/in-work/{id}")
+    public String getInWork(@PathVariable long id) {
+        return taskService.howLongWasTheTaskInProgress(id);
+    }
+    @GetMapping(value = "/in-test/{id}")
+    public String getInTest(@PathVariable long id) {
+        return taskService.howLongWasTheTaskInTesting(id);
+    }
 }

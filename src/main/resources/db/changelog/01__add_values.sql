@@ -1,3 +1,5 @@
+--liquibase formatted sql
+--changeset bunaev:add_activity_values_for_task
 -- populate users
 DELETE
 FROM USERS;
@@ -324,3 +326,9 @@ values (6, 1, '2023-05-15 09:05:10', null, 'Data', null, 3, 'epic', 'in_progress
        (11, 118, '2023-05-16 10:05:10', null, 'UI tab of tasks', null, 4, 'task', 'in_progress', 'normal'),
        (5, 118, '2023-05-16 11:10:10', null, 'UI tab of tasks', null, null, null, null, 'high'),
        (11, 118, '2023-05-16 12:30:10', null, 'UI tab of tasks', null, 2, null, null, null);
+
+
+INSERT INTO ACTIVITY (AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE )
+VALUES (2,24, '2025-05-13 10:20:00', 'in_progress'),
+       (2,24,'2025-05-16 12:30:10', 'ready_for_review'),
+       (2,24,'2025-05-24 14:45:20','done');

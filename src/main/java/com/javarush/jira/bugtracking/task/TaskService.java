@@ -9,6 +9,7 @@ import com.javarush.jira.bugtracking.task.mapper.TaskExtMapper;
 import com.javarush.jira.bugtracking.task.mapper.TaskFullMapper;
 import com.javarush.jira.bugtracking.task.to.TaskToExt;
 import com.javarush.jira.bugtracking.task.to.TaskToFull;
+import com.javarush.jira.common.TimestampMapper;
 import com.javarush.jira.common.error.DataConflictException;
 import com.javarush.jira.common.error.NotFoundException;
 import com.javarush.jira.common.util.Util;
@@ -19,8 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import static com.javarush.jira.bugtracking.ObjectType.TASK;
 import static com.javarush.jira.bugtracking.task.TaskUtil.fillExtraFields;
@@ -139,5 +144,62 @@ public class TaskService {
         if (!userType.equals(possibleUserType)) {
             throw new DataConflictException(String.format(assign ? CANNOT_ASSIGN : CANNOT_UN_ASSIGN, userType, task.getStatusCode()));
         }
+    }
+    @Transactional
+    public void addTags(Long id, String...tag) {
+        Task task = handler.getRepository().getExisted(id);
+        for (String tagName : tag) {
+            task.getTags().add(tagName);
+        }
+        handler.getRepository().save(task);
+    }
+
+    //Задача №8 - два метода, вычисляющие время выполнения задачи и время ее тестирования.
+
+    @Transactional
+    public String howLongWasTheTaskInProgress (Long id) {
+        Task task = handler.getRepository().getExisted(id);
+        List<Activity> activities = task.getActivities();
+        Timestamp inProgress = Timestamp.valueOf(Objects.requireNonNull(activities.stream()
+                .filter(activity -> "in_progress".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst()
+                .orElse(null)));
+        Timestamp readyForReview = Timestamp.valueOf(Objects.requireNonNull(activities.stream()
+                .filter(activity -> "ready_for_review".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst()
+                .orElse(null)));
+        Duration dif = Duration.between(inProgress.toInstant(), readyForReview.toInstant());
+        String day = String.valueOf(dif.toDays());
+        String hour = String.valueOf(dif.toHours() % 24);
+        String minute = String.valueOf(dif.toMinutes() % 60);
+        String second = String.valueOf(dif.getSeconds() % 60);
+        return day + " день(-я) " +
+                hour + " часов(-а) " + minute +
+                " минут " + second + " секунд.";
+    }
+    @Transactional
+    public String howLongWasTheTaskInTesting (Long id) {
+        Task task = handler.getRepository().getExisted(id);
+        List<Activity> activities = task.getActivities();
+        Timestamp done = Timestamp.valueOf(Objects.requireNonNull(activities.stream()
+                .filter(activity -> "done".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst()
+                .orElse(null)));
+        Timestamp review = Timestamp.valueOf(Objects.requireNonNull(activities.stream()
+                .filter(activity -> "ready_for_review".equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst()
+                .orElse(null)));
+        Duration dif = Duration.between(review.toInstant(), done.toInstant());
+        String day = String.valueOf(dif.toDays());
+        String hour = String.valueOf(dif.toHours() % 24);
+        String minute = String.valueOf(dif.toMinutes() % 60);
+        String second = String.valueOf(dif.getSeconds() % 60);
+        return day + " день(-я) " +
+                hour + " часов(-а) " + minute +
+                " минут " + second + " секунд.";
     }
 }

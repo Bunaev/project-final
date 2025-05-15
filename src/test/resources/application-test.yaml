@@ -1,16 +1,7 @@
 spring.cache.type: none
 spring:
-  datasource:
-    url: jdbc:h2:mem:test;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS=VALUE
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-    database-platform: org.hibernate.dialect.H2Dialect
+  sql:
+    init:
+      mode: always
   liquibase:
-    change-log: classpath:db/changelog.sql
     contexts: test
-    driver-class-name: org.h2.Driver
