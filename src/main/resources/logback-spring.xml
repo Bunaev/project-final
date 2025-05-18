@@ -27,5 +27,6 @@
         <root level="WARN">
             <appender-ref ref="FILE"/>
         </root>
+        <logger name="liquibase" level="DEBUG" />
     </springProfile>
 </configuration>
