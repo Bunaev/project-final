@@ -7,7 +7,8 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
+COPY src/main/resources/db ./liquibase/
+COPY resources ./resources
 EXPOSE 8080
 LABEL authors="bunaev"
-CMD ["sh", "-c", "sleep 30 && java -jar app.jar"]
-ENTRYPOINT ["java", "-jar", "/app/app.jar", "--logging.level.liquibase=DEBUG", "--logging.level.org.springframework=DEBUG"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
